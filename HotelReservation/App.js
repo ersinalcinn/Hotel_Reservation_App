@@ -22,9 +22,7 @@ export default function App() {
         title: 'Sign Up',
         headerBackTitle: 'Login', 
         headerShown:true,
-        // Geri butonunun metni
-        // veya
-        // headerBackTitleVisible: false, // Geri butonunun metni gizleme
+        
       }}
       />
      
