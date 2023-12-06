@@ -1,16 +1,131 @@
 // SignupScreen.js
 
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
+import {Dimensions,Alert, TouchableOpacity,ImageBackground,StyleSheet,TextInput,KeyboardAvoidingView,ScrollView,View, Text, SafeAreaView } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
+import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
+import {initializeApp} from 'firebase/app';
+import { app } from '../firebase';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
+const {height} = Dimensions.get("window");
 
 const SignupScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleRegisterButton = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log("Account created.")
+        Alert.alert("Account created.")
+        const user = userCredential.user;
+        console.log(user);
+        navigation.navigate('Login');
+      })
+      .catch(error => {
+        console.log(error)
+        Alert.alert("Error", error.message); // Hata mesajını alert olarak göster
+      });
+  };
     
+
+  const navigation = useNavigation();
+  
+  const LoginPressButton = () => {
+    navigation.navigate('Login'); // 'YeniEkran' adlı ekranın ismi
+  };
+  
+
   return (
-    <View>
-      <Text>This is the Signup Screen!</Text>
-      {/* İçeriği buraya ekleyebilirsiniz */}
-    </View>
+    
+    <KeyboardAvoidingView 
+      style={{flex:1, backgroundColor:'white'}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+       // İsteğe bağlı: Klavye boyutunu ayarlamak için
+    >
+      <ScrollView contentContainerStyle={{paddingBottom:100}}>
+      <ImageBackground
+        style={styles.imageBackground}
+        resizeMode="contain"
+        source={require('../assets/loginBackground.jpg')}
+      ></ImageBackground>
+        <View style={styles.container}>
+        <Text style={styles.title}>Sign Up</Text>
+          <View style={{flexDirection:'row'}}>
+          <Text>Already have an account ? 
+          </Text>
+          <TouchableOpacity  onPress={LoginPressButton} >
+          <Text style={{fontWeight:'bold', flexDirection:'row',fontSize:15}}> Login</Text>
+        </TouchableOpacity> 
+       
+          {/* Diğer bileşenler buraya eklenebilir */}
+          
+          </View>
+          <View style={{flex:1, width:'80%',alignItems:'center'}}>
+          
+          <TextInput onChangeText={(text) => setEmail(text)} placeholder="E-mail" style={styles.inputs} />
+          <TextInput onChangeText={(text) => setPassword(text)} placeholder="Password" secureTextEntry={true} style={styles.inputs} />
+          
+          <TouchableOpacity onPress={handleRegisterButton} style={styles.buttonLogin}>
+          <Text style={styles.buttonText}>REGISTER</Text>
+        </TouchableOpacity>
+          </View>
+        </View>
+        </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default SignupScreen;
+
+const styles = StyleSheet.create({
+  container: {
+
+    flex:1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    
+  },
+  imageBackground: {
+    height:height/2,
+    backgroundColor:'white',
+    borderRadius:10,
+    marginTop:20,
+  },
+  title:{
+    fontSize:20,
+    fontWeight:'bold',
+    marginTop:10,
+  },
+  inputs:{
+   
+    borderRadius: 30,
+    height: 40,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+    marginTop: 10,
+    width:'80%',
+  },
+  buttonLogin: {
+   marginTop:20,
+    width: 350,
+    height: 40,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#145ce2',
+    
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: 'Verdana',
+  },
+});

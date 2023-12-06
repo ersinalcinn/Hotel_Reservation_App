@@ -7,8 +7,11 @@ import ForgotPassword from './screen/ForgotPassword';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+const Tab = createBottomTabNavigator();
 const Stack=createStackNavigator();
+
+
 export default function App() {
   
   return (
@@ -27,7 +30,11 @@ export default function App() {
       />
      
   {/* Diğer ekranlar */}
-      <Stack.Screen name="Login" component={Login} options={{headerShown:false}} /> 
+      <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
       <Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}} /> 
       <Stack.Screen
       name="ForgotPassword"

@@ -1,19 +1,39 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+
 import Signup from './Signup';
 import MainScreen from './MainScreen';
 import ForgotPassword from './ForgotPassword';
-import { ScrollView,KeyboardAvoidingView,ImageBackground,StyleSheet, Text, View, TextInput , Switch, Dimensions, TouchableOpacity, KeyboardAvoidingViewComponent} from 'react-native';
+import { Alert,ScrollView,KeyboardAvoidingView,ImageBackground,StyleSheet, Text, View, TextInput , Switch, Dimensions, TouchableOpacity, KeyboardAvoidingViewComponent} from 'react-native';
+
+import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
+import {initializeApp} from 'firebase/app';
+import { firebaseConfig } from '../firebase';
+
+const auth = getAuth();
 const {height} = Dimensions.get("window");
-const Stack = createStackNavigator();
+
 
 const LoginScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleLoginButton = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log("Account created.")
+        Alert.alert("Login Succesfull.")
+        const user = userCredential.user;
+        console.log(user);
+        navigation.navigate('MainScreen');
+      })
+      .catch(error => {
+        console.log(error)
+        Alert.alert("Error", error.message); // Hata mesajını alert olarak göster
+      });
+  };
   
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  
   const navigation = useNavigation();
 
   const SignupButtonPress = () => {
@@ -22,9 +42,7 @@ const LoginScreen = () => {
   const ForgotPasswordButtonPress = () => {
     navigation.navigate(ForgotPassword); // 'YeniEkran' adlı ekranın ismi
   };
-  const LoginButtonPress = () => {
-    navigation.navigate(MainScreen); // 'YeniEkran' adlı ekranın ismi
-  };
+ 
   
   return (
 
@@ -41,14 +59,14 @@ const LoginScreen = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Hello,</Text>
         <Text style={styles.subTitle}>Sign In to your account</Text>
-        <TextInput placeholder="E-mail" style={styles.loginInput} />
-        <TextInput placeholder="Password"   style={styles.loginInput} secureTextEntry={true}/>
+        <TextInput onChangeText={text =>setEmail(text)} value={email} placeholder="E-mail" style={styles.loginInput} />
+        <TextInput onChangeText={text =>setPassword(text)} value={password} placeholder="Password"   style={styles.loginInput} secureTextEntry={true}/>
         <View style={styles.container}>
         <TouchableOpacity onPress={ForgotPasswordButtonPress} style={styles.forgotPassword}>
           <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
         </TouchableOpacity>
         <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={LoginButtonPress} style={styles.buttonLogin}>
+        <TouchableOpacity onPress={handleLoginButton} style={styles.buttonLogin}>
           <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={SignupButtonPress} style={styles.buttonSignup}>
@@ -77,7 +95,7 @@ const styles = StyleSheet.create({
     marginTop:10,
     height:'100%',
     backgroundColor:'white',
-    height:'90%'
+    
   },
   title: {
     marginTop:-20,
@@ -128,7 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FD850D',
+    backgroundColor: '#145ce2',
     
   },
   buttonSignup: {
@@ -137,7 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FD850D',
+    backgroundColor: '#145ce2',
     marginTop:10,
     marginBottom:15,
     
