@@ -8,7 +8,7 @@ const ExampleComponent = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth,user => {
       if (user) {
-        console.log('Kullanıcı UID:', user.uid);
+       {/* console.log('Kullanıcı UID:', user.uid); */}
       } else {
         console.log('Kullanıcı oturumu açmış değil.');
       }

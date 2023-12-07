@@ -8,7 +8,7 @@ import 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
 import {initializeApp} from 'firebase/app';
-import { collection, addDoc,db } from "../firebase"; 
+import { collection, addDoc,db,doc,setDoc } from "../firebase"; 
 
 const auth = getAuth();
 
@@ -27,13 +27,14 @@ const SignupScreen = () => {
         const user = userCredential.user;
         const userUID = user.uid;
         const userEmail = user.email;
+        const userDocRef = doc(db, 'users', userUID);
           try {
-            const docRef = await addDoc(collection(db, "users"), {
-              userUID:userUID,
-              userEmail:userEmail,
+            await setDoc(userDocRef, { // Belge oluşturulurken setDoc kullanılır
+              userUID: userUID,
+              userEmail: userEmail,
               role: "user"
             });
-            console.log("Document written with ID: ", docRef.id);
+            console.log("Document written with ID: ", userDocRef.id);
           } catch (e) {
             console.error("Error adding document: ", e);
           }
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#145ce2',
+    backgroundColor: '#3081D0',
     
   },
   buttonText: {

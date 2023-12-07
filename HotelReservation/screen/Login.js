@@ -1,14 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
-
-
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import app from '../firebase';
 import { Alert,ScrollView,KeyboardAvoidingView,ImageBackground,StyleSheet, Text, View, TextInput , Switch, Dimensions, TouchableOpacity, KeyboardAvoidingViewComponent} from 'react-native';
 
-import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
+import { getAuth,deleteUser, createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
 
 
 const auth = getAuth();
+const firestore = getFirestore(app);
 const {height} = Dimensions.get("window");
 
 
@@ -17,12 +18,29 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const handleLoginButton = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("Account created.")
-        Alert.alert("Login Succesfull.")
-        const user = userCredential.user;
-        console.log(user);
-        navigation.navigate('Main');
+      .then(async (userCredential) => {
+        const docRef = doc(firestore, "users", userCredential.user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            console.log("Login Succesfull.")
+            Alert.alert("Login Succesfull.")
+            const user = userCredential.user;
+            console.log(user);
+            navigation.navigate('Main');
+          } else {
+            
+            deleteUser(userCredential.user).then(() => {
+              Alert.alert("Your account was deleted by Admin. Please sign up a new email again.")
+              navigation.navigate('Login');
+            }).catch((error) => {
+              Alert.alert(error);
+
+              navigation.navigate('Login');
+            });
+          }
+
+        
       })
       .catch(error => {
         console.log(error)
@@ -143,7 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#145ce2',
+    backgroundColor: '#3081D0',
     
   },
   buttonSignup: {
@@ -152,7 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#145ce2',
+    backgroundColor: '#3081D0',
     marginTop:10,
     marginBottom:15,
     

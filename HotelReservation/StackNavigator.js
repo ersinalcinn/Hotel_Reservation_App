@@ -17,7 +17,10 @@ import MainScreen from './screen/MainScreen';
 import Signup from './screen/Signup';
 import Login from './screen/Login';
 import ForgotPassword from './screen/ForgotPassword';
-
+import ListAllUsers from './screen/ListAllUsers';
+import DeleteUser from './screen/DeleteUser';
+import UpdateUser from './screen/UpdateUser';
+import EditUser from './screen/EditUser';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -73,6 +76,18 @@ const StackNavigator = () => {
         <Stack.Screen name="Forgot" options={{
           tabBarLabel: "Forgot", headerShown: false
         }} component={ForgotPassword} />
+        <Stack.Screen name="ListAllUsers" options={{
+          tabBarLabel: "ListAllUsers", headerBackTitle:"Profile",headerTitle:"List All Users" ,headerShown: true
+        }} component={ListAllUsers} />
+        <Stack.Screen name="DeleteUser" options={{
+          tabBarLabel: "DeleteUser", headerBackTitle:"Profile",headerTitle:"Delete a User" ,headerShown: true
+        }} component={DeleteUser} />
+        <Stack.Screen name="UpdateUser" options={{
+          tabBarLabel: "UpdateUser", headerBackTitle:"Profile",headerTitle:"Update a User" ,headerShown: true
+        }} component={UpdateUser} />
+        <Stack.Screen name="EditUser" options={{
+          tabBarLabel: "EditUser", headerBackTitle:"Update a User",headerTitle:"Edit User" ,headerShown: true
+        }} component={EditUser} />
       </Stack.Navigator>
     </NavigationContainer>
   );
