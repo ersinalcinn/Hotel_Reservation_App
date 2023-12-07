@@ -1,17 +1,27 @@
-// ForgotPassword.js
-
-import React from 'react';
+import React, { useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import app from "../firebase";
 import { View, Text } from 'react-native';
 
-const MainScreen = () => {
-    
+const ExampleComponent = () => {
+  const auth = getAuth(app);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth,user => {
+      if (user) {
+        console.log('Kullanıcı UID:', user.uid);
+      } else {
+        console.log('Kullanıcı oturumu açmış değil.');
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
-     <View style={{ flex: 1 }}>
-      <View style={{ flex: 1, backgroundColor: 'red' }} />
-      <View style={{ flex: 2, backgroundColor: 'blue' }} />
-      <View style={{ flex: 3, backgroundColor: 'green' }} />
+    <View>
+      <Text>Kullanıcı UID'sini konsolda görmek için bu bileşeni kullanabilirsiniz.</Text>
     </View>
   );
 };
 
-export default MainScreen;
+export default ExampleComponent;

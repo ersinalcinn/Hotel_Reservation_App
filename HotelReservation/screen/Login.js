@@ -2,14 +2,11 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
 
-import Signup from './Signup';
-import MainScreen from './MainScreen';
-import ForgotPassword from './ForgotPassword';
+
 import { Alert,ScrollView,KeyboardAvoidingView,ImageBackground,StyleSheet, Text, View, TextInput , Switch, Dimensions, TouchableOpacity, KeyboardAvoidingViewComponent} from 'react-native';
 
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
-import {initializeApp} from 'firebase/app';
-import { firebaseConfig } from '../firebase';
+
 
 const auth = getAuth();
 const {height} = Dimensions.get("window");
@@ -25,7 +22,7 @@ const LoginScreen = () => {
         Alert.alert("Login Succesfull.")
         const user = userCredential.user;
         console.log(user);
-        navigation.navigate('MainScreen');
+        navigation.navigate('Main');
       })
       .catch(error => {
         console.log(error)
@@ -37,10 +34,10 @@ const LoginScreen = () => {
   const navigation = useNavigation();
 
   const SignupButtonPress = () => {
-    navigation.navigate(Signup); // 'YeniEkran' adlı ekranın ismi
+    navigation.navigate('Signup'); // 'YeniEkran' adlı ekranın ismi
   };
   const ForgotPasswordButtonPress = () => {
-    navigation.navigate(ForgotPassword); // 'YeniEkran' adlı ekranın ismi
+    navigation.navigate('Forgot'); // 'YeniEkran' adlı ekranın ismi
   };
  
   

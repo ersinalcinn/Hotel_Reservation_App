@@ -2,29 +2,45 @@
 
 import React, { useState } from 'react';
 import {Dimensions,Alert, TouchableOpacity,ImageBackground,StyleSheet,TextInput,KeyboardAvoidingView,ScrollView,View, Text, SafeAreaView } from 'react-native';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
 import {initializeApp} from 'firebase/app';
-import { app } from '../firebase';
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { collection, addDoc,db } from "../firebase"; 
 
-
+const auth = getAuth();
 
 const {height} = Dimensions.get("window");
+
+
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleRegisterButton = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async(userCredential) => {
         console.log("Account created.")
         Alert.alert("Account created.")
         const user = userCredential.user;
+        const userUID = user.uid;
+        const userEmail = user.email;
+          try {
+            const docRef = await addDoc(collection(db, "users"), {
+              userUID:userUID,
+              userEmail:userEmail,
+              role: "user"
+            });
+            console.log("Document written with ID: ", docRef.id);
+          } catch (e) {
+            console.error("Error adding document: ", e);
+          }
+        
         console.log(user);
         navigation.navigate('Login');
+        
       })
       .catch(error => {
         console.log(error)
