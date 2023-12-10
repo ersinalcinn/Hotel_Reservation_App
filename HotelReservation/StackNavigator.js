@@ -21,6 +21,7 @@ import ListAllUsers from './screen/ListAllUsers';
 import DeleteUser from './screen/DeleteUser';
 import UpdateUser from './screen/UpdateUser';
 import EditUser from './screen/EditUser';
+import AddRoom from './screen/AddRoom';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -88,6 +89,9 @@ const StackNavigator = () => {
         <Stack.Screen name="EditUser" options={{
           tabBarLabel: "EditUser", headerBackTitle:"Update a User",headerTitle:"Edit User" ,headerShown: true
         }} component={EditUser} />
+        <Stack.Screen name="AddRoom" options={{
+          tabBarLabel: "AddRoom", headerBackTitle:"Add a Room",headerTitle:"Add a Room" ,headerShown: true
+        }} component={AddRoom} />
       </Stack.Navigator>
     </NavigationContainer>
   );

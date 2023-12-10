@@ -26,7 +26,7 @@ const AdminProfile = () => {
   };
 
   const handleHotelAdd = () => {
-    console.log('Otel ekleme işlemi');
+    navigation.navigate('AddRoom');
   };
 
   const handleHotelDelete = () => {
