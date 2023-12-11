@@ -12,41 +12,25 @@ import {
   Image,
   TouchableOpacity
 } from "react-native";
-import React, { useLayoutEffect, useState,useEffect } from "react";
+import React, { useLayoutEffect, useState, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from '@react-native-picker/picker';
 
 import { Feather } from "@expo/vector-icons";
 import DatePicker from "react-native-date-ranges";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs,updateDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase';
-const data = [
-  {
-    id: '1',
-    roomType: 'Deluxe Room',
-    pricePerNight: '$150',
-    capacity: '2 guests',
-    image: require('../assets/executive-room.jpg'),
-    roomFeatures: ['Free Wi-Fi', 'Breakfast Included', 'Air Conditioning','Free Wi-Fi','Breakfast Included','Air Conditioning'],
-  },
-  {
-    id: '2',
-    roomType: 'Suite Room',
-    pricePerNight: '$250',
-    capacity: '4 guests',
-    image: require('../assets/executive-room.jpg'),
-    roomFeatures: ['Free Wi-Fi','Breakfast Included','Air Conditioning','Free Wi-Fi','Breakfast Included','Air Conditioning'],
-  },
-  // Diğer oda öğeleri...
-];
 
-const deviceHeight=Dimensions.get('window').width;
-const deviceWidth=Dimensions.get('window').width;
+
+const deviceHeight = Dimensions.get('window').width;
+const deviceWidth = Dimensions.get('window').width;
 const HomeScreen = () => {
   const auth = getAuth(app);
+
+
   const firestore = getFirestore(app);
   const navigation = useNavigation();
   const [rooms, setRooms] = useState([]);
@@ -55,38 +39,89 @@ const HomeScreen = () => {
   const [selectedAdults, setSelectedAdults] = useState('');
   const [selectedChildren, setSelectedChildren] = useState('');
   const [likedRooms, setLikedRooms] = useState([]);
-  
+  const [userID,setUserID]=useState(['']);
   const openDetails = (roomId) => {
     navigation.navigate('RoomDetail', roomId);
   };
 
-  const toggleLike = (roomId) => {
-    if (likedRooms.includes(roomId)) {
-      const updatedLikedRooms = likedRooms.filter((item) => item !== roomId);
-      setLikedRooms(updatedLikedRooms);
-    } else {
-      setLikedRooms([...likedRooms, roomId]);
+  const toggleLike =async  (roomId) => {
+    
+    const isLiked = likedRooms.includes(roomId);
+    
+    if (isLiked) {
+     const index = likedRooms.indexOf(roomId); // Odanın index'ini al
+    if (index !== -1) {
+      const newLikedRooms = [...likedRooms]; // likedRooms'un bir kopyasını oluştur
+      newLikedRooms.splice(index, 1); // Belirtilen index'teki 1 öğeyi sil
+      
+      setLikedRooms(newLikedRooms); // Yeni diziyi state'e atayın veya kullanımınıza göre güncelleyin
+      const docRef = doc(firestore, "users", userID);
+      
+        // Set the "capital" field of the city 'DC'
+        await updateDoc(docRef, {
+          likedRooms: newLikedRooms
+        });
     }
+    } else {
+      const newLikedRooms = [...likedRooms]; // likedRooms'un bir kopyasını oluştur
+        newLikedRooms.push(roomId); // Belirtilen index'teki 1 öğeyi sil
+        
+        setLikedRooms(newLikedRooms); // Yeni diziyi state'e atayın veya kullanımınıza göre güncelleyin
+        
+        const docRef = doc(firestore, "users", userID);
+
+          // Set the "capital" field of the city 'DC'
+          await updateDoc(docRef, {
+            likedRooms: newLikedRooms
+          });
+    }
+    
   };
   useEffect(() => {
+    
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserID(user.uid);
+        
+        
+        
+        const fetchLikedRooms = async () => {
+          try {
+            const docRef = doc(firestore, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            
+            setLikedRooms(docSnap.data().likedRooms);
+          } catch (error) {
+            console.error('Error fetching liked rooms: ', error);
+          }
+        };
+        fetchLikedRooms();
+      } else {
+        setIsLoggedIn(false);
+      }
+    });
+
+
+
     const fetchRooms = async () => {
       try {
         const querySnapshot = await getDocs(collection(firestore, 'rooms'));
         const userList = [];
         querySnapshot.forEach((doc) => {
           userList.push({ id: doc.id, data: doc.data() });
-          
+
         });
         setRooms(userList);
-        console.log(rooms);
+
       } catch (error) {
         console.error('Error fetching users: ', error);
       }
     };
-    
+
 
     fetchRooms();
-  }, []);
+  },
+    []);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -127,12 +162,12 @@ const HomeScreen = () => {
   };
 
 
- 
+
 
   return (
     <>
       <ScrollView>
-        
+
 
         <View>
           <View
@@ -144,7 +179,7 @@ const HomeScreen = () => {
             }}
           >
             {/* Destination */}
-            
+
 
             {/* Selected Dates */}
             <Pressable
@@ -176,26 +211,26 @@ const HomeScreen = () => {
                   },
                   headerStyle: {
                     backgroundColor: "#3081D0",
-                    height:deviceHeight/8,
-                    
+                    height: deviceHeight / 8,
+
                   },
-                  headerMarkTitle: {display:'none' },
-                  headerDateTitle: {marginTop:30, fontSize:20,},
+                  headerMarkTitle: { display: 'none' },
+                  headerDateTitle: { marginTop: 30, fontSize: 20, },
                   contentText: {
                     fontSize: 15,
-                    
+
                     flexDirection: "row",
                     alignItems: "center",
                     marginRight: "auto",
                   },
                 }}
                 selectedBgColor="#3081D0"
-                
+
                 customButton={(onConfirm) => customButton(onConfirm)}
                 onConfirm={(startDate, endDate) =>
                   setSelectedDates(startDate, endDate)
                 }
-                
+
                 allowFontScaling={false}
                 placeholder={"Select Your Dates"}
                 mode={"range"}
@@ -204,7 +239,7 @@ const HomeScreen = () => {
 
             {/* Rooms and Guests */}
             <Pressable
-              
+
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -212,39 +247,39 @@ const HomeScreen = () => {
                 paddingHorizontal: 10,
                 borderColor: "#FFC72C",
                 borderWidth: 2,
-                height:deviceHeight/2,
+                height: deviceHeight / 2,
                 alignItems: 'center', justifyContent: 'center'
               }}
             >
               <Ionicons name="person-outline" size={24} color="black" />
               <Picker
-        selectedValue={selectedAdults}
-        style={{ height: 100, width: '40%',justifyContent:'center' }}
-        onValueChange={(itemValue) => setSelectedAdults(itemValue)}
-      >
-        
-        <Picker.Item label="1 Adults" value="1" />
-        <Picker.Item label="2 Adults" value="2" />
-        <Picker.Item label="3 Adults" value="3" />
-        <Picker.Item label="4 Adults" value="4" />
-        {/* Diğer yetişkin sayıları */}
-      </Picker>
+                selectedValue={selectedAdults}
+                style={{ height: 100, width: '40%', justifyContent: 'center' }}
+                onValueChange={(itemValue) => setSelectedAdults(itemValue)}
+              >
 
-      {/* Çocuklar için Picker */}
-      <Picker
-        selectedValue={selectedChildren}
-        style={{ height: 100, width: '50%',justifyContent:'center' }}
-        onValueChange={(itemValue) => setSelectedChildren(itemValue)}
-      >
-        <Picker.Item label="0 Children" value="0" />
-        <Picker.Item label="1 Children" value="1" />
-        <Picker.Item label="2 Children" value="2" />
-        <Picker.Item label="3 Children" value="3" />
-        <Picker.Item label="4 Children" value="4" />
-        {/* Diğer çocuk sayıları */}
-      </Picker>
+                <Picker.Item label="1 Adults" value="1" />
+                <Picker.Item label="2 Adults" value="2" />
+                <Picker.Item label="3 Adults" value="3" />
+                <Picker.Item label="4 Adults" value="4" />
+                {/* Diğer yetişkin sayıları */}
+              </Picker>
+
+              {/* Çocuklar için Picker */}
+              <Picker
+                selectedValue={selectedChildren}
+                style={{ height: 100, width: '50%', justifyContent: 'center' }}
+                onValueChange={(itemValue) => setSelectedChildren(itemValue)}
+              >
+                <Picker.Item label="0 Children" value="0" />
+                <Picker.Item label="1 Children" value="1" />
+                <Picker.Item label="2 Children" value="2" />
+                <Picker.Item label="3 Children" value="3" />
+                <Picker.Item label="4 Children" value="4" />
+                {/* Diğer çocuk sayıları */}
+              </Picker>
             </Pressable>
-              
+
             {/* Search Button */}
             <Pressable
               onPress={() => searchPlaces(route?.params.input)}
@@ -269,36 +304,47 @@ const HomeScreen = () => {
             </Pressable>
           </View>
 
-          
-          
-          
-          
-          
+
+
+
+
+
         </View>
         {rooms.map((room) => (
-  <View key={room.id} style={styles.roomContainer}>
-    {/* Diğer içerikler */}
-    <Image source={{ uri: room.data.imageURL }} style={styles.roomImage} resizeMode="stretch" />
-    <View style={styles.roomDetails}>
-      <Text style={styles.roomType}>{room.data.roomType}</Text>
-      <Text style={styles.price}>{room.data.pricePerNight} $ / Night</Text>
-      {/* Diğer detaylar */}
-      <View style={styles.amenitiesContainer}>
-        {room.data.roomFeatures.map((feature, index) => (
-          <Text key={index} style={styles.amenity}>
-            {'\u2022'} {feature}
-          </Text>
-        ))}
-            </View>
-            <TouchableOpacity onPress={() => openDetails(rooms.id)} style={styles.detailsButton}>
-              <Text style={styles.detailsText}>Detayları İncele</Text>
+          <View key={room.id} style={styles.roomContainer}>
+            {/* Diğer içerikler */}
+            <TouchableOpacity
+              onPress={() => toggleLike(room.id)} // toggleLike fonksiyonunu çağırırken odanın kimliğini iletiyoruz
+              style={styles.likeButton}
+            >
+              <Ionicons
+                name={likedRooms.includes(room.id) ? 'heart' : 'heart-outline'}
+                size={24}
+                color={likedRooms.includes(room.id) ? 'red' : 'black'}
+              />
             </TouchableOpacity>
+            
+            <Image source={{ uri: room.data.downloadUrlFirebase }} style={styles.roomImage} resizeMode="stretch" />
+            <View style={styles.roomDetails}>
+              <Text style={styles.roomType}>{room.data.roomType}</Text>
+              <Text style={styles.price}>{room.data.pricePerNight} $ / Night</Text>
+              {/* Diğer detaylar */}
+              <View style={styles.amenitiesContainer}>
+                {room.data.roomFeatures.map((feature, index) => (
+                  <Text key={index} style={styles.amenity}>
+                    {'\u2022'} {feature}
+                  </Text>
+                ))}
+              </View>
+              <TouchableOpacity onPress={() => openDetails(rooms.id)} style={styles.detailsButton}>
+                <Text style={styles.detailsText}>Detayları İncele</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      ))}
+        ))}
       </ScrollView>
-     
-      
+
+
     </>
   );
 };
@@ -334,11 +380,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   roomImage: {
-    width: deviceWidth/2.5,
-    height:'100%',
-    justifyContent:'center',
-    marginLeft:5,
-    marginRight:5,
+    width: deviceWidth / 2.5,
+    height: '100%',
+    justifyContent: 'center',
+    marginLeft: 5,
+    marginRight: 5,
   },
   roomDetails: {
     flex: 1,
@@ -360,15 +406,15 @@ const styles = StyleSheet.create({
   },
   amenitiesContainer: {
     flexDirection: 'column',
-    
-    
+
+
   },
   amenity: {
     backgroundColor: '#f0f0f0',
-    
+
     paddingHorizontal: 8,
     marginRight: 8,
-    marginTop :2,
+    marginTop: 2,
     borderRadius: 4,
   },
 });

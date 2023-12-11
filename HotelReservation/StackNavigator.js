@@ -22,6 +22,7 @@ import DeleteUser from './screen/DeleteUser';
 import UpdateUser from './screen/UpdateUser';
 import EditUser from './screen/EditUser';
 import AddRoom from './screen/AddRoom';
+import UpdateRoom from './screen/UpdateRoom';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -35,8 +36,8 @@ const StackNavigator = () => {
             <AntDesign name="home" size={24} color="black" />
           ),
         }} />
-        <Tab.Screen name="Saved" component={SavedScreen} options={{
-          tabBarLabel: "Saved", headerShown: false, tabBarIcon: ({ focused }) => focused ? (
+        <Tab.Screen name="SavedScreen" component={SavedScreen} options={{
+          tabBarLabel: "SavedScreen", headerShown: false, tabBarIcon: ({ focused }) => focused ? (
             <AntDesign name="heart" size={24} color="black" />
           ) : (
             <AntDesign name="hearto" size={24} color="black" />
@@ -87,10 +88,13 @@ const StackNavigator = () => {
           tabBarLabel: "UpdateUser", headerBackTitle:"Profile",headerTitle:"Update a User" ,headerShown: true
         }} component={UpdateUser} />
         <Stack.Screen name="EditUser" options={{
-          tabBarLabel: "EditUser", headerBackTitle:"Update a User",headerTitle:"Edit User" ,headerShown: true
+          tabBarLabel: "EditUser", headerBackTitle:"Profile",headerTitle:"Edit User" ,headerShown: true
         }} component={EditUser} />
         <Stack.Screen name="AddRoom" options={{
-          tabBarLabel: "AddRoom", headerBackTitle:"Add a Room",headerTitle:"Add a Room" ,headerShown: true
+          tabBarLabel: "AddRoom", headerBackTitle:"Profile",headerTitle:"Add a Room" ,headerShown: true
+        }} component={AddRoom} />
+        <Stack.Screen name="UpdateRoom" options={{
+          tabBarLabel: "UpdateRoom", headerBackTitle:"Profile",headerTitle:"Update a Room" ,headerShown: true
         }} component={AddRoom} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -26,7 +26,7 @@ const LoginScreen = () => {
             console.log("Login Succesfull.")
             Alert.alert("Login Succesfull.")
             const user = userCredential.user;
-            console.log(user);
+            
             navigation.navigate('Main');
           } else {
             

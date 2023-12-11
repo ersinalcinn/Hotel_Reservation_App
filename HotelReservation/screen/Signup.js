@@ -19,6 +19,7 @@ const {height} = Dimensions.get("window");
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [favourite, setFavourite] = useState([]);
   const handleRegisterButton = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(async(userCredential) => {
@@ -32,7 +33,8 @@ const SignupScreen = () => {
             await setDoc(userDocRef, { // Belge oluşturulurken setDoc kullanılır
               userUID: userUID,
               userEmail: userEmail,
-              role: "user"
+              role: "user",
+              favourite:null
             });
             console.log("Document written with ID: ", userDocRef.id);
           } catch (e) {

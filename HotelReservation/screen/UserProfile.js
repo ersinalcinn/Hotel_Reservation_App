@@ -5,9 +5,7 @@ const UserProfile = () => {
   const handleEditAccount = () => {
     console.log('Edit your account');
   };
-  const handleBooking = () => {
-    console.log('All Bookings');
-  };
+  
   const handleLogOut = () => {
     console.log('Log Out');
   };
@@ -18,9 +16,7 @@ const UserProfile = () => {
    
        
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={handleBooking}>
-        <Text style={styles.buttonText}>ALL BOOKINGS</Text>
-      </TouchableOpacity>
+      
       <TouchableOpacity style={styles.button} onPress={handleEditAccount}>
         <Text style={styles.buttonText}>EDIT YOUR ACCOUNT</Text>
       </TouchableOpacity>
