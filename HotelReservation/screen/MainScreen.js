@@ -40,10 +40,27 @@ const HomeScreen = () => {
   const [selectedChildren, setSelectedChildren] = useState('');
   const [likedRooms, setLikedRooms] = useState([]);
   const [userID,setUserID]=useState(['']);
+  
   const openDetails = (roomId) => {
     navigation.navigate('RoomDetail', roomId);
   };
-
+  const searchRoom = () => {
+    if(selectedDates!=null )
+    {
+      const values = {
+        dates:selectedDates,
+        adults:selectedAdults,
+        children:selectedChildren
+      };
+      
+      navigation.navigate('SearchBooking',{values});
+    }
+    else 
+    {
+      Alert.alert("Please select a timeline for reservation ");
+    }
+    
+  };
   const toggleLike =async  (roomId) => {
     
     const isLiked = likedRooms.includes(roomId);
@@ -82,6 +99,7 @@ const HomeScreen = () => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUserID(user.uid);
+       
         
         
         
@@ -91,6 +109,7 @@ const HomeScreen = () => {
             const docSnap = await getDoc(docRef);
             
             setLikedRooms(docSnap.data().likedRooms);
+          
           } catch (error) {
             console.error('Error fetching liked rooms: ', error);
           }
@@ -269,7 +288,7 @@ const HomeScreen = () => {
               <Picker
                 selectedValue={selectedChildren}
                 style={{ height: 100, width: '50%', justifyContent: 'center' }}
-                onValueChange={(itemValue) => setSelectedChildren(itemValue)}
+                onValueChange={(itemValue1) => setSelectedChildren(itemValue1)}
               >
                 <Picker.Item label="0 Children" value="0" />
                 <Picker.Item label="1 Children" value="1" />
@@ -282,7 +301,7 @@ const HomeScreen = () => {
 
             {/* Search Button */}
             <Pressable
-              onPress={() => searchPlaces(route?.params.input)}
+              onPress={() => searchRoom()}
               style={{
                 paddingHorizontal: 10,
                 borderColor: "#FFC72C",

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase';
-
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { View, Text, ActivityIndicator } from 'react-native';
 import AdminProfile from './AdminProfile';
+import { Ionicons } from "@expo/vector-icons";
 import UserProfile from './UserProfile';
 const ExampleComponent = () => {
   const [userRole, setUserRole] = useState(null);
@@ -12,7 +13,7 @@ const ExampleComponent = () => {
   const auth = getAuth(app);
   const firestore = getFirestore(app);
 
-
+  const navigation = useNavigation();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -37,7 +38,31 @@ const ExampleComponent = () => {
 
     return () => unsubscribe();
   }, []);
-
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: "Profile",
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white",
+      },
+      headerStyle: {
+        backgroundColor: "#3081D0",
+        height: 110,
+        borderBottomColor: "transparent",
+        shadowColor: "transparent",
+      },
+      headerRight: () => (
+        <Ionicons
+          name="notifications-outline"
+          size={24}
+          color="white"
+          style={{ marginRight: 12 }}
+        />
+      ),
+    });
+  }, []);
   // Kullanıcı rolüne göre view döndür
   const renderViewByRole = () => {
     if (userRole === 'admin') {

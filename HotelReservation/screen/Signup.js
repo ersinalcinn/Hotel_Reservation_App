@@ -20,6 +20,7 @@ const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [favourite, setFavourite] = useState([]);
+  
   const handleRegisterButton = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(async(userCredential) => {
@@ -29,12 +30,13 @@ const SignupScreen = () => {
         const userUID = user.uid;
         const userEmail = user.email;
         const userDocRef = doc(db, 'users', userUID);
+        setFavourite([]);
           try {
             await setDoc(userDocRef, { // Belge oluşturulurken setDoc kullanılır
               userUID: userUID,
               userEmail: userEmail,
               role: "user",
-              favourite:null
+              likedRooms:favourite
             });
             console.log("Document written with ID: ", userDocRef.id);
           } catch (e) {

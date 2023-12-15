@@ -23,6 +23,8 @@ import UpdateUser from './screen/UpdateUser';
 import EditUser from './screen/EditUser';
 import AddRoom from './screen/AddRoom';
 import UpdateRoom from './screen/UpdateRoom';
+import SearchBooking from './screen/SearchBooking';
+
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -57,6 +59,7 @@ const StackNavigator = () => {
             <Ionicons name="person-outline" size={24} color="black" />
           ),
         }} />
+        
 
       </Tab.Navigator>
     );
@@ -95,7 +98,11 @@ const StackNavigator = () => {
         }} component={AddRoom} />
         <Stack.Screen name="UpdateRoom" options={{
           tabBarLabel: "UpdateRoom", headerBackTitle:"Profile",headerTitle:"Update a Room" ,headerShown: true
-        }} component={AddRoom} />
+        }} component={UpdateRoom} />
+        <Stack.Screen name="SearchBooking" options={{
+          tabBarLabel: "SearchBooking", headerBackTitle:"Reservation",headerTitle:"Search Booking" ,headerShown: true
+        }} component={SearchBooking} />
+       
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -26,7 +26,7 @@ import app from '../firebase';
 
 const deviceHeight = Dimensions.get('window').width;
 const deviceWidth = Dimensions.get('window').width;
-const HomeScreen = () => {
+const SavedScreen = () => {
   const auth = getAuth(app);
 
 
@@ -42,13 +42,7 @@ const HomeScreen = () => {
   const openDetails = (roomId) => {
     navigation.navigate('RoomDetail', roomId);
   };
-  useFocusEffect(
-    React.useCallback(() => {
-      // Ekran odaklandığında yapılacak işlemler buraya yazılabilir
-      console.log("Odaklandı");
-      
-    }, [])
-  );
+  
   const toggleLike =async  (roomId) => {
     
     const isLiked = likedRooms.includes(roomId);
@@ -127,11 +121,11 @@ const HomeScreen = () => {
 
     
   },
-    []);
+    [likedRooms]);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: "Booking.com",
+      title: "Saves",
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: "bold",
@@ -203,7 +197,7 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default SavedScreen;
 
 const styles = StyleSheet.create({
   roomContainer: {
