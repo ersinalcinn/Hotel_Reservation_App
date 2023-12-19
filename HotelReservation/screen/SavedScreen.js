@@ -110,8 +110,6 @@ const SavedScreen = () => {
           }
         };
         fetchLikedRooms();
-      } else {
-        setIsLoggedIn(false);
       }
     });
 

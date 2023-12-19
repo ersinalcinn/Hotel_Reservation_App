@@ -24,7 +24,8 @@ import EditUser from './screen/EditUser';
 import AddRoom from './screen/AddRoom';
 import UpdateRoom from './screen/UpdateRoom';
 import SearchBooking from './screen/SearchBooking';
-
+import EditProfile from './screen/EditProfile';
+import UserProfile from './screen/UserProfile';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -102,6 +103,10 @@ const StackNavigator = () => {
         <Stack.Screen name="SearchBooking" options={{
           tabBarLabel: "SearchBooking", headerBackTitle:"Reservation",headerTitle:"Search Booking" ,headerShown: true
         }} component={SearchBooking} />
+         <Stack.Screen name="EditProfile" options={{
+          tabBarLabel: "EditProfile",headerBackTitle:"Profile",headerTitle:"Edit Profile" ,headerShown: true
+        }} component={EditProfile} />
+        
        
       </Stack.Navigator>
     </NavigationContainer>

@@ -115,9 +115,7 @@ const HomeScreen = () => {
           }
         };
         fetchLikedRooms();
-      } else {
-        setIsLoggedIn(false);
-      }
+      } 
     });
 
 

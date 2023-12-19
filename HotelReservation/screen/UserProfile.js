@@ -1,13 +1,23 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-
+import { Alert,View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { getAuth,signOut, updatePassword,onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import app from '../firebase';
 const UserProfile = () => {
+  const navigation = useNavigation();
+  const auth = getAuth(app);
   const handleEditAccount = () => {
-    console.log('Edit your account');
+    navigation.navigate('EditProfile');
   };
   
   const handleLogOut = () => {
-    console.log('Log Out');
+    signOut(auth).then(() => {
+      Alert.alert("Sign out succesfull.");
+      navigation.navigate("Login");
+    }).catch((error) => {
+      Alert.alert("Error");
+    });
   };
 
   

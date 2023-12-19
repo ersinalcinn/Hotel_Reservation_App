@@ -186,9 +186,7 @@ const SearchBooking = ({ route }) => {
       };
 
       fetchLikedRooms(); // fetchLikedRooms'ü burada çağırın
-    } else {
-      setIsLoggedIn(false);
-    }
+    } 
 
 
     const fetchRooms = async () => {

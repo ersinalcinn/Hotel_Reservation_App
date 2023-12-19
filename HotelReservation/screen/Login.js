@@ -23,7 +23,7 @@ const LoginScreen = () => {
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
-            console.log("Login Succesfull.")
+            
             Alert.alert("Login Succesfull.")
             const user = userCredential.user;
             
@@ -43,7 +43,7 @@ const LoginScreen = () => {
         
       })
       .catch(error => {
-        console.log(error)
+        
         Alert.alert("Error", error.message); // Hata mesajını alert olarak göster
       });
   };

@@ -31,9 +31,7 @@ const ExampleComponent = () => {
         } catch (error) {
           console.error('Firestore rol bilgisi alma hatası:', error);
         }
-      } else {
-        console.log('Kullanıcı oturumu açmış değil.');
-      }
+      } 
     });
 
     return () => unsubscribe();
