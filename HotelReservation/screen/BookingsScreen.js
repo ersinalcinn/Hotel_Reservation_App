@@ -20,7 +20,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc,deleteDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase';
 
 
@@ -38,71 +38,9 @@ const SavedScreen = () => {
   const [selectedAdults, setSelectedAdults] = useState('');
   const [selectedChildren, setSelectedChildren] = useState('');
   const [likedRooms, setLikedRooms] = useState([]);
-
   const [userID, setUserID] = useState(['']);
-  const cancelReservation = async (reservation) => {
-    
-    try {
-      const reservationsRef = collection(firestore, 'reservation'); // Koleksiyon adınızı buraya girin
-      const q = query(reservationsRef, 
-        where('startDate', '==', reservation.startDate),
-        where('endDate', '==', reservation.endDate),
-        where('userUID', '==', reservation.userUID)
-      );
-  
-      const querySnapshot = await getDocs(q);
-  
-      if (querySnapshot.empty) {
-        console.log('Silinecek belge bulunamadı.');
-        return;
-      }
-  
-      Alert.alert(
-        'Emin misiniz?',
-        'Bu kaydı silmek istediğinizden emin misiniz?',
-        [
-          {
-            text: 'Hayır',
-            style: 'cancel',
-          },
-          {
-            text: 'Evet',
-            onPress: async () => {
-              querySnapshot.forEach(async (doc) => {
-                await deleteDoc(doc.ref);
-                console.log('Belge başarıyla silindi:', doc.id);
-              });
-              Alert.alert('Belge başarıyla silindi!');
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-  
-    } catch (error) {
-      console.error('Belge silinirken bir hata oluştu:', error);
-    }
-  };
-  const openDetails = (reservation) => {
-   
-
-    if (reservation) {
-      
-      const { startDate, endDate } = reservation;
-      
-      const startTimestamp = startDate.seconds * 1000;
-      const endTimestamp = endDate.seconds * 1000;
-  
-      const formattedStartDate = new Date(startTimestamp).toLocaleDateString();
-      const formattedEndDate = new Date(endTimestamp).toLocaleDateString();
-  
-      const alertMessage = `Başlangıç Tarihi: ${formattedStartDate}\nBitiş Tarihi: ${formattedEndDate}`;
-      const alertTitle = 'Rezervation Details';
-      Alert.alert(alertTitle, alertMessage);
-    } else {
-      console.log("Reservation details not found.");
-    }
-    
+  const openDetails = (roomId) => {
+    navigation.navigate('RoomDetail', roomId);
   };
 
   const toggleLike = async (roomId) => {
@@ -148,22 +86,20 @@ const SavedScreen = () => {
     
         const userReservationsSnapshot = await getDocs(userReservationsQuery);
         const fetchedRooms = [];
-        const reservationRooms = [];
+    
         for (const temp of userReservationsSnapshot.docs) {
           const reservationData = temp.data();
-          reservationRooms.push(reservationData);
-         
           const roomRef = doc(firestore, 'rooms', reservationData.roomID);
           const docSnap = await getDoc(roomRef); 
           
           if (docSnap.exists()) {
             const data = docSnap.data();
-            fetchedRooms.push({ id: docSnap.id, data , reservation: reservationData }); // Her bir odayı fetchedRooms dizisine ekler
+            fetchedRooms.push({ id: docSnap.id, data }); // Her bir odayı fetchedRooms dizisine ekler
           } else {
             console.log('Room does not exist');
           }
         }
-        
+    
         setRooms(fetchedRooms); // Mevcut rooms state'ine yeni verileri ekler
       } catch (error) {
         console.error('Error fetching rooms: ', error);
@@ -259,11 +195,8 @@ const SavedScreen = () => {
                   </Text>
                 ))}
               </View>
-              <TouchableOpacity onPress={() => openDetails(room.reservation)} style={styles.detailsButton}>
-                <Text style={styles.detailsText}>Check out the details</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => cancelReservation(room.reservation)} style={styles.detailsButton}>
-                <Text style={styles.detailsText}>Reservation Cancellation</Text>
+              <TouchableOpacity onPress={() => openDetails(rooms.id)} style={styles.detailsButton}>
+                <Text style={styles.detailsText}>Detayları İncele</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -7,6 +7,8 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
 
+import ListAllUsers from "./ListAllUsers";
+
 const AdminProfile = () => {
     const navigation = useNavigation();
   const handleListUser =  () => {
