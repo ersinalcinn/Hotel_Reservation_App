@@ -1,6 +1,6 @@
 // SignupScreen.js
 
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from "react";
 import {Dimensions,Alert, TouchableOpacity,ImageBackground,StyleSheet,TextInput,KeyboardAvoidingView,ScrollView,View, Text, SafeAreaView } from 'react-native';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -52,7 +52,24 @@ const SignupScreen = () => {
         Alert.alert("Error", error.message); // Hata mesajını alert olarak göster
       });
   };
-    
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: "Sign Up",
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white",
+      },
+      headerStyle: {
+        backgroundColor: "#3081D0",
+        height: 110,
+        borderBottomColor: "transparent",
+        shadowColor: "transparent",
+      },
+      
+    });
+  }, []);
 
   const navigation = useNavigation();
   
