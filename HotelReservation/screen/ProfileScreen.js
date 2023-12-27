@@ -51,21 +51,13 @@ const ExampleComponent = () => {
         borderBottomColor: "transparent",
         shadowColor: "transparent",
       },
-      headerRight: () => (
-        <Ionicons
-          name="notifications-outline"
-          size={24}
-          color="white"
-          style={{ marginRight: 12 }}
-        />
-      ),
     });
   }, []);
   // Kullanıcı rolüne göre view döndür
   const renderViewByRole = () => {
     if (userRole === 'admin') {
       return (
-        <View style={{marginTop:'10%', alignItems:'center', justifyContent:'center'}}>
+        <View style={{marginTop:'50%', alignItems:'center', justifyContent:'center'}}>
           <Text style={{flexDirection:'column'}}>Welcome, {userRole}</Text>
           <Text style={{flexDirection:'column',marginTop:5,marginBottom:30,}}>{userEmail}</Text>
           <AdminProfile/>
@@ -74,7 +66,7 @@ const ExampleComponent = () => {
       );
     } else if (userRole === 'user') {
       return (
-        <View style={{marginTop:'70%', alignItems:'center', justifyContent:'center'}}>
+        <View style={{marginTop:'50%', alignItems:'center', justifyContent:'center'}}>
           <Text style={{flexDirection:'column'}}>Welcome, {userRole}</Text>
           <Text style={{flexDirection:'column',marginTop:5,marginBottom:30,}}>{userEmail}</Text>
           <UserProfile/>

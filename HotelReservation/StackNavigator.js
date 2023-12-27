@@ -80,6 +80,13 @@ const StackNavigator = () => {
             <Feather name="home" size={24} color="black" />
           ),
         }} />
+        <Tab.Screen name="Profile" component={ProfileScreen} options={{
+          tabBarLabel: "Profile", headerShown: false, tabBarIcon: ({ focused }) => focused ? (
+            <Ionicons name="person" size={24} color="black" />
+          ) : (
+            <Ionicons name="person-outline" size={24} color="black" />
+          ),
+        }} />
         {/* ... Diğer Admin tab'leri */}
       </Tab.Navigator>
     );
@@ -142,22 +149,22 @@ const StackNavigator = () => {
           tabBarLabel: "Forgot", headerBackTitleVisible: true,headerTintColor: 'white',headerBackTitle:'Login'
         }} component={ForgotPassword} />
         <Stack.Screen name="ListAllUsers" options={{
-          tabBarLabel: "ListAllUsers", headerBackTitle:"Profile",headerTitle:"List All Users" ,headerShown: true
+          tabBarLabel: "ListAllUsers", headerBackTitle:"User Panel",headerTitle:"List All Users" ,headerShown: true
         }} component={ListAllUsers} />
         <Stack.Screen name="DeleteUser" options={{
-          tabBarLabel: "DeleteUser", headerBackTitle:"Profile",headerTitle:"Delete a User" ,headerShown: true
+          tabBarLabel: "DeleteUser", headerBackTitle:"User Panel",headerTitle:"Delete a User" ,headerShown: true
         }} component={DeleteUser} />
         <Stack.Screen name="UpdateUser" options={{
-          tabBarLabel: "UpdateUser", headerBackTitle:"Profile",headerTitle:"Update a User" ,headerShown: true
+          tabBarLabel: "UpdateUser", headerBackTitle:"User Panel",headerTitle:"Update a User" ,headerShown: true
         }} component={UpdateUser} />
         <Stack.Screen name="EditUser" options={{
-          tabBarLabel: "EditUser", headerBackTitle:"Profile",headerTitle:"Edit User" ,headerShown: true
+          tabBarLabel: "EditUser", headerBackTitle:"User Panel",headerTitle:"Edit User" ,headerShown: true
         }} component={EditUser} />
         <Stack.Screen name="AddRoom" options={{
-          tabBarLabel: "AddRoom", headerBackTitle:"Profile",headerTitle:"Add a Room" ,headerShown: true
+          tabBarLabel: "AddRoom", headerBackTitle:"Room Panel",headerTitle:"Add a Room" ,headerShown: true
         }} component={AddRoom} />
         <Stack.Screen name="UpdateRoom" options={{
-          tabBarLabel: "UpdateRoom", headerBackTitle:"Profile",headerTitle:"Update a Room" ,headerShown: true
+          tabBarLabel: "UpdateRoom", headerBackTitle:"Room Panel",headerTitle:"Update a Room" ,headerShown: true
         }} component={UpdateRoom} />
         <Stack.Screen name="SearchBooking" options={{
           tabBarLabel: "SearchBooking", headerBackTitle:"Reservation",headerTitle:"Search Booking" ,headerShown: true

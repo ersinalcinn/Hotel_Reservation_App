@@ -97,7 +97,7 @@ const AddRoom = () => {
     try {
       const docRef = await addDoc(collection(db, 'rooms'), roomData);
       Alert.alert("Room was created.");
-      navigation.navigate('ListAllUsers');
+      navigation.replace('Main');
       
     } catch (error) {
       console.error('Belge eklenirken hata oluştu:', error);

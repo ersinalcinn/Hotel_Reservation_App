@@ -1,61 +1,70 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
 import { getAuth,signOut, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import app from '../firebase';
+import { getFirestore, doc, getDoc,deleteDoc } from 'firebase/firestore';
+
+import app from "../firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { View,StyleSheet,TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { View,Alert,ScrollView,StyleSheet,TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import AdminProfile from './AdminProfile';
 import { Ionicons } from "@expo/vector-icons";
 import UserProfile from './UserProfile';
 const ExampleComponent = () => {
+  const [users, setUsers] = useState([]);
   const [userRole, setUserRole] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
   const auth = getAuth(app);
   const firestore = getFirestore(app);
-  const handleListUser = () => {
-
-    navigation.navigate('ListAllUsers');
-
+  const editUser = (id) => {
+    
+    navigation.navigate('EditUser', { id });
   };
 
-  const handleUserDelete = () => {
-    navigation.navigate('DeleteUser');
+  const handleDeleteUser = (id) => {
+    Alert.alert(
+      'Eylemi Onayla',
+      'Bu işlemi gerçekleştirmek istediğinize emin misiniz?',
+      [
+        {
+          text: 'Hayır',
+          style: 'cancel',
+        },
+        {
+          text: 'Evet',
+          onPress:  async () => {
+              await deleteDoc(doc(firestore, "users", id));
+              Alert.alert("This record deleted.");
+              navigation.replace('Main','AdminUserPanel');
+          
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+    
   };
 
-  const handleUserEdit = () => {
-    navigation.navigate('UpdateUser');
-  };
+ 
 
-  const handleLogOut = () => {
-    signOut(auth).then(() => {
-      Alert.alert("Sign out succesfull.");
-      navigation.navigate("Login");
-    }).catch((error) => {
-      Alert.alert("Error");
-    });
-  };
+ 
   const navigation = useNavigation();
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // Kullanıcı oturumu varsa Firestore'dan rolü al
-        const userDocRef = doc(firestore, 'users', user.uid); // Kullanıcının rol bilgisinin saklandığı Firestore koleksiyonu ve belge referansı
-        try {
-          const userDocSnapshot = await getDoc(userDocRef);
-          if (userDocSnapshot.exists()) {
-            const userData = userDocSnapshot.data();
-            setUserRole(userData.role); // Kullanıcının rol bilgisini state'e kaydet
-            setUserEmail(userData.userEmail);
-          } else {
-            console.log('Kullanıcı rol bilgisi bulunamadı.');
-          }
-        } catch (error) {
-          console.error('Firestore rol bilgisi alma hatası:', error);
-        }
-      } 
-    });
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(firestore, 'users'));
+        const userList = [];
+        querySnapshot.forEach((doc) => {
+          userList.push({ id: doc.id, data: doc.data() });
+          
+        });
+        setUsers(userList);
+      } catch (error) {
+        console.error('Error fetching users: ', error);
+      }
+    };
+   
 
-    return () => unsubscribe();
+    fetchUsers();
   }, []);
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -76,41 +85,39 @@ const ExampleComponent = () => {
     });
   }, []);
   // Kullanıcı rolüne göre view döndür
-  const renderViewByRole = () => {
-    
-      return (
-        <View style={{marginTop:'10%', alignItems:'center', justifyContent:'center'}}>
-          <Text style={{flexDirection:'column'}}>Welcome, {userRole}</Text>
-          <Text style={{flexDirection:'column',marginTop:5,marginBottom:30,}}>{userEmail}</Text>
-          <View style={styles.container}>
-
-<TouchableOpacity style={styles.button} onPress={handleListUser}>
-  <Text style={styles.buttonText}>LIST ALL USERS</Text>
-</TouchableOpacity>
-<TouchableOpacity style={styles.button} onPress={handleUserDelete}>
-  <Text style={styles.buttonText}>DELETE A USER</Text>
-</TouchableOpacity>
-<TouchableOpacity style={styles.button} onPress={handleUserEdit}>
-  <Text style={styles.buttonText}>UPDATE A USER</Text>
-</TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleLogOut}>
-            <Text style={styles.buttonText}>LOG OUT</Text>
-          </TouchableOpacity>
-        </View>
-          </View>
-      
-      );
-    
-  };
+ 
 
   return (
-    <View>
-      {userRole ? (
-        renderViewByRole() // Kullanıcı rolüne göre view döndür
-      ) : (
-        <ActivityIndicator size="large" color="#0000ff" /> // Rol bilgisi yüklenirken gösterilecek loading indicator
-      )}
-    </View>
+    <ScrollView>
+      {users.map((user) => (
+        
+        <View key={user.id} style={styles.userContainer}>
+          {/* Kullanıcı fotoğrafı */}
+          
+          <View style={styles.userInfo}>
+            <Text style={{fontWeight:'bold',fontSize:16,marginBottom:10}}>User Details:</Text>
+            <Text style={styles.email}>User ID: {user.data.userUID}</Text>
+            <Text style={styles.email}>User Email: {user.data.userEmail}</Text>
+            <Text style={styles.email}>User Role: {user.data.role}</Text>
+            
+            
+          
+          
+            <TouchableOpacity onPress={() => editUser(user.id)} style={styles.detailsButton}>
+                <Text style={styles.detailsText}>Update Role</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDeleteUser(user.id)} style={styles.detailsButton}>
+                <Text style={styles.detailsText}>Delete User</Text>
+              </TouchableOpacity>
+              
+              
+            
+            </View>
+        </View>
+        
+      
+    ))}
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -118,6 +125,19 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  detailsButton: {
+    backgroundColor: '#3081D0',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginTop: 10,
+    
+  },
+  detailsText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#3081D0',
@@ -130,6 +150,33 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  userContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 20,
+    margin:10,
+  },
+  userImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 15,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  email: {
+    color: '#555',
+    marginBottom: 5,
   },
 });
 export default ExampleComponent;

@@ -210,14 +210,6 @@ const SavedScreen = () => {
         borderBottomColor: "transparent",
         shadowColor: "transparent",
       },
-      headerRight: () => (
-        <Ionicons
-          name="notifications-outline"
-          size={24}
-          color="white"
-          style={{ marginRight: 12 }}
-        />
-      ),
     });
   }, []);
 

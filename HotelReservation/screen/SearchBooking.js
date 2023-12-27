@@ -130,47 +130,7 @@ const SearchBooking = ({ route }) => {
       Alert.alert('Hata', 'Lütfen tarihleri seçin');
     }
   };
-
-  const toggleLike = async (roomId) => {
-
-    const isLiked = likedRooms.includes(roomId);
-
-    if (isLiked) {
-      const index = likedRooms.indexOf(roomId); // Odanın index'ini al
-      if (index !== -1) {
-        const newLikedRooms = [...likedRooms]; // likedRooms'un bir kopyasını oluştur
-        newLikedRooms.splice(index, 1); // Belirtilen index'teki 1 öğeyi sil
-
-        setLikedRooms(newLikedRooms); // Yeni diziyi state'e atayın veya kullanımınıza göre güncelleyin
-        const docRef = doc(firestore, "users", userID);
-
-        // Set the "capital" field of the city 'DC'
-        await updateDoc(docRef, {
-          likedRooms: newLikedRooms
-        });
-      }
-    } else {
-      const newLikedRooms = [...likedRooms]; // likedRooms'un bir kopyasını oluştur
-      newLikedRooms.push(roomId); // Belirtilen index'teki 1 öğeyi sil
-
-      setLikedRooms(newLikedRooms); // Yeni diziyi state'e atayın veya kullanımınıza göre güncelleyin
-
-      const docRef = doc(firestore, "users", userID);
-
-      // Set the "capital" field of the city 'DC'
-      await updateDoc(docRef, {
-        likedRooms: newLikedRooms
-      });
-    }
-
-  };
-
-
   useEffect(() => {
-
-
-
-
     const user = auth.currentUser;
     if (user) {
       setUserID(user.uid);
@@ -275,16 +235,7 @@ const SearchBooking = ({ route }) => {
         {rooms.map((room) => (
           <View key={room.id} style={styles.roomContainer}>
             {/* Diğer içerikler */}
-            <TouchableOpacity
-              onPress={() => toggleLike(room.id)} // toggleLike fonksiyonunu çağırırken odanın kimliğini iletiyoruz
-              style={styles.likeButton}
-            >
-              <Ionicons
-                name={likedRooms.includes(room.id) ? 'heart' : 'heart-outline'}
-                size={24}
-                color={likedRooms.includes(room.id) ? 'red' : 'black'}
-              />
-            </TouchableOpacity>
+            
 
             <Image source={{ uri: room.data.downloadUrlFirebase }} style={styles.roomImage} resizeMode="stretch" />
             <View style={styles.roomDetails}>

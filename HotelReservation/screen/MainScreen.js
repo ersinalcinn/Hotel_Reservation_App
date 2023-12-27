@@ -41,9 +41,6 @@ const HomeScreen = () => {
   const [likedRooms, setLikedRooms] = useState([]);
   const [userID,setUserID]=useState(['']);
   
-  const openDetails = (roomId) => {
-    navigation.navigate('RoomDetail', roomId);
-  };
   const searchRoom = () => {
     if(selectedDates!=null )
     {
@@ -142,7 +139,7 @@ const HomeScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: "Booking.com",
+      title: "Search Room",
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: "bold",
@@ -154,14 +151,7 @@ const HomeScreen = () => {
         borderBottomColor: "transparent",
         shadowColor: "transparent",
       },
-      headerRight: () => (
-        <Ionicons
-          name="notifications-outline"
-          size={24}
-          color="white"
-          style={{ marginRight: 12 }}
-        />
-      ),
+     
     });
   }, []);
   const customButton = (onConfirm) => {
@@ -196,8 +186,6 @@ const HomeScreen = () => {
             }}
           >
             {/* Destination */}
-
-
             {/* Selected Dates */}
             <Pressable
               style={{
@@ -271,14 +259,14 @@ const HomeScreen = () => {
               <Ionicons name="person-outline" size={24} color="black" />
               <Picker
                 selectedValue={selectedAdults}
-                style={{ height: 100, width: '40%', justifyContent: 'center' }}
+                style={{ height: 100, width: '50%',justifyContent: 'center', flex:1}}
                 onValueChange={(itemValue) => setSelectedAdults(itemValue)}
               >
 
-                <Picker.Item label="1 Adults" value="1" />
-                <Picker.Item label="2 Adults" value="2" />
-                <Picker.Item label="3 Adults" value="3" />
-                <Picker.Item label="4 Adults" value="4" />
+                <Picker.Item label="1 Adults" value="1" style={{fontSize:15}}/>
+                <Picker.Item label="2 Adults" value="2" style={{fontSize:15}}/>
+                <Picker.Item label="3 Adults" value="3" style={{fontSize:15}}/>
+                <Picker.Item label="4 Adults" value="4" style={{fontSize:15}}/>
                 {/* Diğer yetişkin sayıları */}
               </Picker>
 
@@ -288,11 +276,11 @@ const HomeScreen = () => {
                 style={{ height: 100, width: '50%', justifyContent: 'center' }}
                 onValueChange={(itemValue1) => setSelectedChildren(itemValue1)}
               >
-                <Picker.Item label="0 Children" value="0" />
-                <Picker.Item label="1 Children" value="1" />
-                <Picker.Item label="2 Children" value="2" />
-                <Picker.Item label="3 Children" value="3" />
-                <Picker.Item label="4 Children" value="4" />
+                <Picker.Item label="0 Children" value="0" style={{fontSize:15}}/>
+                <Picker.Item label="1 Children" value="1" style={{fontSize:15}}/>
+                <Picker.Item label="2 Children" value="2" style={{fontSize:15}}/>
+                <Picker.Item label="3 Children" value="3" style={{fontSize:15}}/>
+                <Picker.Item label="4 Children" value="4" style={{fontSize:15}}/>
                 {/* Diğer çocuk sayıları */}
               </Picker>
             </Pressable>
@@ -353,9 +341,6 @@ const HomeScreen = () => {
                   </Text>
                 ))}
               </View>
-              <TouchableOpacity onPress={() => openDetails(rooms.id)} style={styles.detailsButton}>
-                <Text style={styles.detailsText}>Detayları İncele</Text>
-              </TouchableOpacity>
             </View>
           </View>
         ))}

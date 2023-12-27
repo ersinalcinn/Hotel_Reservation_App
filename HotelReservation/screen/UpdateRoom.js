@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, db } from '../firebase';
@@ -7,8 +7,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigation } from '@react-navigation/native';
 import app from '../firebase'; // Firebase bağlantınızı buraya ekleyin
-
-const AddRoom = () => {
+import { doc, query, where, getDoc,updateDoc,deleteDoc} from "firebase/firestore";
+const UpdateRoom = ({route}) => {
   const navigation = useNavigation();
   const [roomType, setRoomType] = useState('');
   const [pricePerNight, setPricePerNight] = useState('');
@@ -18,7 +18,51 @@ const AddRoom = () => {
   const [imageURL, setImageURL] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [downloadUrlFirebase, setDownloadUrlFirebase] = useState('');
+  const [features, setFeatures] = useState(null);
   const storage=getStorage(app);
+  const id  = route.params;
+  const [rooms, setRooms] = useState([]);
+  
+  useEffect(() => {
+  const fetchRooms = async () => {
+    try {
+      
+      const userList = [];
+      const docRef = doc(db, "rooms", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setRooms(docSnap.data());
+        
+        const myString=docSnap.data().roomFeatures.join(',')
+        setFeatures(myString);
+        setRoomType(docSnap.data().roomType);
+        setPricePerNight(docSnap.data().pricePerNight);
+        setCapacity(docSnap.data().capacity);
+        setCapacityChildren(docSnap.data().capacityChildren);
+        setRoomFeatures(docSnap.data().roomFeatures);
+        setImageURL(docSnap.data().downloadUrlFirebase);
+        setRoomFeatures(myString);
+        setDownloadUrlFirebase(docSnap.data().downloadUrlFirebase);
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      } 
+      
+      
+    } catch (error) {
+      console.error('Error fetching users: ', error);
+    }
+    
+  };
+
+  const joinFeatures = () => {
+   
+  };
+  fetchRooms();
+  
+  
+},
+  []);
   const getBlobFromUri = async (uri) => {
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -44,6 +88,7 @@ const AddRoom = () => {
     });
 
     if (!result.canceled) {
+      
       setImageURL(result.assets[0].uri);
       if (imageURL) {
         setUploading(true); // Yükleme başladı
@@ -93,18 +138,22 @@ const AddRoom = () => {
     }
   };
 
-  const addNewRoom = async (roomData) => {
+  const updateRoom = async (roomData) => {
     try {
-      const docRef = await addDoc(collection(db, 'rooms'), roomData);
-      Alert.alert("Room was created.");
-      navigation.navigate('ListAllUsers');
-      
-    } catch (error) {
-      console.error('Belge eklenirken hata oluştu:', error);
-    }
+      const userRole = doc(db, "rooms",id);
+
+      // Set the "capital" field of the city 'DC'
+      await updateDoc(userRole, roomData);
+      Alert.alert("This record updated.");
+      navigation.replace('Main','AdminRoomPanel');
+    
+  } catch (error) {
+    console.error('Rol güncelleme hatası:', error);
+  }
   };
 
   const handleCreateRoom = async () => {
+    console.log(imageURL);
     if (roomType && pricePerNight && capacity && capacityChildren && roomFeatures && imageURL) {
       const newRoomData = {
         roomType,
@@ -115,7 +164,7 @@ const AddRoom = () => {
         downloadUrlFirebase,
       };
 
-      addNewRoom(newRoomData);
+      updateRoom(newRoomData);
     } else {
       Alert.alert('Please fill all fields and select an image');
     }
@@ -128,6 +177,7 @@ const AddRoom = () => {
       <TextInput
         style={styles.input}
         value={roomType}
+        
         onChangeText={text => setRoomType(text)}
       />
 
@@ -203,4 +253,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddRoom;
+export default UpdateRoom;

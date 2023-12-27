@@ -35,7 +35,7 @@ const firestore = getFirestore(app);
                       role: selectedRole
                     });
                     Alert.alert("This record updated.");
-                    navigation.navigate('Profile');
+                    navigation.replace('Main','UpdateUserPanel');
                   
                 } catch (error) {
                   console.error('Rol güncelleme hatası:', error);

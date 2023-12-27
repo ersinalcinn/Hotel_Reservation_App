@@ -39,9 +39,6 @@ const SavedScreen = () => {
   const [selectedChildren, setSelectedChildren] = useState('');
   const [likedRooms, setLikedRooms] = useState([]);
   const [userID,setUserID]=useState(['']);
-  const openDetails = (roomId) => {
-    navigation.navigate('RoomDetail', roomId);
-  };
   
   const toggleLike =async  (roomId) => {
     
@@ -135,14 +132,6 @@ const SavedScreen = () => {
         borderBottomColor: "transparent",
         shadowColor: "transparent",
       },
-      headerRight: () => (
-        <Ionicons
-          name="notifications-outline"
-          size={24}
-          color="white"
-          style={{ marginRight: 12 }}
-        />
-      ),
     });
   }, []);
  
@@ -182,9 +171,7 @@ const SavedScreen = () => {
                   </Text>
                 ))}
               </View>
-              <TouchableOpacity onPress={() => openDetails(rooms.id)} style={styles.detailsButton}>
-                <Text style={styles.detailsText}>Detayları İncele</Text>
-              </TouchableOpacity>
+
             </View>
           </View>
         ))}

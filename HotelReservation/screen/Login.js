@@ -62,14 +62,16 @@ const LoginScreen = () => {
   return (
 
     <KeyboardAvoidingView 
-      style={{flex:1}}
+      style={{flex:1, backgroundColor:'white'}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
        // İsteğe bağlı: Klavye boyutunu ayarlamak için
-    ><ImageBackground
+    >
+    <ScrollView ><ImageBackground
         style={styles.imageBackground}
         resizeMode="contain"
         source={require('../assets/loginBackground.jpg')}
       ></ImageBackground>
+      
       
       <View style={styles.container}>
         <Text style={styles.title}>Hello,</Text>
@@ -90,6 +92,7 @@ const LoginScreen = () => {
       </View>
         </View>
         </View>
+        </ScrollView>
         <StatusBar style="auto" />
       
     </KeyboardAvoidingView>
@@ -99,31 +102,30 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+
     flex:1,
     backgroundColor: 'white',
     alignItems: 'center',
-    height:'50%'
     
   },
   imageBackground: {
-    flex:1,
-    marginTop:10,
-    height:'100%',
+    height:height/2,
     backgroundColor:'white',
-    
+    borderRadius:10,
+    marginTop:20,
   },
   title: {
     marginTop:-20,
     fontSize: 20,
     fontWeight: 'bold',
     color: '#181818',
-    fontFamily: 'Verdana',
+    
     
   },
   subTitle: {
     fontSize: 15,
     color: 'gray',
-    fontFamily: 'Verdana',
+
     
   },
   loginInput: {
@@ -179,7 +181,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    fontFamily: 'Verdana',
   },
 });
 
