@@ -25,7 +25,14 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase';
 import { v4 as uuidv4 } from 'uuid';
-
+import * as Notifications from 'expo-notifications';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 const deviceHeight = Dimensions.get('window').width;
 const deviceWidth = Dimensions.get('window').width;
 const SearchBooking = ({ route }) => {
@@ -116,6 +123,13 @@ const SearchBooking = ({ route }) => {
                 roomID:roomID,
               });
               Alert.alert("Reservation succesfull.");
+              Notifications.scheduleNotificationAsync({
+                content: {
+                  title: 'Rezervasyon Oluşturuldu',
+                  body: "Rezarvasyonunuz alınmıştır.İyi günler",
+                },
+                trigger: null,
+              });
               navigation.navigate("Bookings");
             },
           },

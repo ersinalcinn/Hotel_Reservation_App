@@ -167,7 +167,7 @@ const StackNavigator = () => {
           tabBarLabel: "UpdateRoom", headerBackTitle:"Room Panel",headerTitle:"Update a Room" ,headerShown: true
         }} component={UpdateRoom} />
         <Stack.Screen name="SearchBooking" options={{
-          tabBarLabel: "SearchBooking", headerBackTitle:"Reservation",headerTitle:"Search Booking" ,headerShown: true
+          tabBarLabel: "SearchBooking",headerTintColor: 'white', headerBackTitle:"Reservation",headerTitle:"Search Booking" ,headerShown: true
         }} component={SearchBooking} />
          <Stack.Screen name="EditProfile" options={{
           tabBarLabel: "EditProfile",headerBackTitle:"Profile",headerTitle:"Edit Profile" ,headerShown: true
